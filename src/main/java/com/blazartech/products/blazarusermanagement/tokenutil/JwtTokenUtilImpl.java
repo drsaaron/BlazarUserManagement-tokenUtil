@@ -7,6 +7,7 @@ package com.blazartech.products.blazarusermanagement.tokenutil;
 
 import com.blazartech.products.crypto.BlazarCryptoFile;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,12 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
     @Autowired
     private BlazarCryptoFile cryptoFile;
 
+    private static final SecretKey SECRET_KEY = Jwts.SIG.HS512.key().build();
+    
+    private SecretKey signingKey() {
+        return SECRET_KEY;
+    }
+    
     private String getSecret() {
         return cryptoFile.getPassword(secretUserID, secretResourceID);
     }
@@ -69,7 +77,9 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
 
     //for retrieveing any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser().setSigningKey(getSecret()).parseClaimsJws(token).getBody();
+        Jws<Claims> claims = Jwts.parser().verifyWith(signingKey()).build().parseSignedClaims(token);
+        return claims.getPayload();
+//        return Jwts.parser().setSigningKey(getSecret()).parseClaimsJws(token).getBody();
     }
 
     //check if the token has expired
@@ -106,11 +116,12 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
     //   compaction of the JWT to a URL-safe string 
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + tokenExpiry * 1000))
-                .signWith(SignatureAlgorithm.HS512, getSecret()).compact();
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + tokenExpiry * 1000))
+                .signWith(signingKey())
+                .compact();
     }
 
     //validate token
