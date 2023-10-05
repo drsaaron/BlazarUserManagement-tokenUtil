@@ -7,9 +7,9 @@ package com.blazartech.products.blazarusermanagement.tokenutil;
 
 import com.blazartech.products.crypto.BlazarCryptoFile;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.Date;
@@ -77,7 +77,8 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
 
     //for retrieveing any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
-        Jws<Claims> claims = Jwts.parser().verifyWith(signingKey()).build().parseSignedClaims(token);
+        //Jws<Claims> claims = Jwts.parser().verifyWith(signingKey()).build().parseSignedClaims(token);
+        Jwt<Header, Claims> claims = Jwts.parser().unsecured().build().parseUnsecuredClaims(token);
         return claims.getPayload();
 //        return Jwts.parser().setSigningKey(getSecret()).parseClaimsJws(token).getBody();
     }
@@ -120,7 +121,7 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + tokenExpiry * 1000))
-                .signWith(signingKey())
+            //    .signWith(signingKey())
                 .compact();
     }
 
