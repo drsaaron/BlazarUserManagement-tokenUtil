@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>BlazarUserManagement-tokenUtil</artifactId>
-    <version>1.6-RELEASE</version>
+    <version>1.7-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
     
     <description>Utility class for dealing with JWT tokens</description>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>com.blazartech</groupId>
             <artifactId>BlazarCryptoFile-mvn</artifactId>
-            <version>1.36-RELEASE</version>
+            <version>1.37-RELEASE</version>
             
             <exclusions>
                 <exclusion>
