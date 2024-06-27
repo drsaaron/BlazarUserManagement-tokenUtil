@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>BlazarUserManagement-tokenUtil</artifactId>
-    <version>1.18-RELEASE</version>
+    <version>1.19-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,14 +15,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
     </parent>
     
     <dependencies>
         <dependency>
             <groupId>com.blazartech</groupId>
             <artifactId>BlazarCryptoFile-mvn</artifactId>
-            <version>1.46-RELEASE</version>
+            <version>1.47-RELEASE</version>
             
             <exclusions>
                 <exclusion>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.12.5</version>
+            <version>0.12.6</version>
         </dependency>
         
         <dependency>
