@@ -54,7 +54,7 @@ public class JwtTokenUtilImplTest {
     @Autowired
     private JwtTokenUtilImpl instance;
     
-    @MockBean
+    @MockitoBean
     private BlazarCryptoFile cryptoFile;
     
     public JwtTokenUtilImplTest() {
