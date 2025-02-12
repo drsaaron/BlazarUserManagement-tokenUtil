@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>BlazarUserManagement-tokenUtil</artifactId>
-    <version>1.24-RELEASE</version>
+    <version>1.25-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,14 +15,14 @@
     <parent>
         <groupId>com.blazartech</groupId>
         <artifactId>blazarjavaparent</artifactId>
-        <version>1.4-RELEASE</version>
+        <version>1.5-RELEASE</version>
     </parent>
     
     <dependencies>
         <dependency>
             <groupId>com.blazartech</groupId>
             <artifactId>BlazarCryptoFile-mvn</artifactId>
-            <version>1.52-RELEASE</version>
+            <version>1.54-RELEASE</version>
             
             <exclusions>
                 <exclusion>
