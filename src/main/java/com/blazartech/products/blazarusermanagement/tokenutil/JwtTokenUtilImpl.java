@@ -10,7 +10,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,11 +48,9 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
 
     @Autowired
     private BlazarCryptoFile cryptoFile;
-
-    private static final SecretKey SECRET_KEY = Jwts.SIG.HS512.key().build();
     
     private SecretKey signingKey() {
-        return SECRET_KEY;
+        return Keys.hmacShaKeyFor(getSecret().getBytes(StandardCharsets.UTF_8));
     }
     
     private String getSecret() {
@@ -77,10 +77,11 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
 
     //for retrieveing any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
-        //Jws<Claims> claims = Jwts.parser().verifyWith(signingKey()).build().parseSignedClaims(token);
-        Jwt<Header, Claims> claims = Jwts.parser().unsecured().build().parseUnsecuredClaims(token);
-        return claims.getPayload();
-//        return Jwts.parser().setSigningKey(getSecret()).parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .verifyWith(signingKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     //check if the token has expired
@@ -121,7 +122,7 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + tokenExpiry * 1000))
-            //    .signWith(signingKey())
+                .signWith(signingKey())
                 .compact();
     }
 

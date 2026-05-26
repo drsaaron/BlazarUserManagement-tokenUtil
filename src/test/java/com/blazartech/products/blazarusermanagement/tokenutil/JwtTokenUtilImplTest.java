@@ -71,7 +71,7 @@ public class JwtTokenUtilImplTest {
     @BeforeEach
     public void setUp() {
         Mockito.when(cryptoFile.getPassword(Mockito.any(), Mockito.any()))
-                .thenReturn("myResource");
+                .thenReturn("myResource myresource2 myresource3");
     }
     
     @AfterEach
@@ -142,6 +142,8 @@ public class JwtTokenUtilImplTest {
         Collection<GrantedAuthority> authorities = List.of(new MyAuthority(ROLE1), new MyAuthority(ROLE2));
         UserDetails details = new User("testUser", "testPass", authorities);
         String token = instance.generateToken(details);
+        assertTrue(instance.validateToken(token, details));
+        
         Collection<String> roles = instance.getRoles(token);
         
         assertEquals(2, roles.size());
