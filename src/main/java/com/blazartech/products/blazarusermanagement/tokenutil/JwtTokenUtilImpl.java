@@ -7,8 +7,6 @@ package com.blazartech.products.blazarusermanagement.tokenutil;
 
 import com.blazartech.products.crypto.BlazarCryptoFile;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,8 +51,13 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
         return Keys.hmacShaKeyFor(getSecret().getBytes(StandardCharsets.UTF_8));
     }
     
-    private String getSecret() {
-        return cryptoFile.getPassword(secretUserID, secretResourceID);
+    private String secret;
+    
+    private synchronized String getSecret() {
+        if (secret == null) {
+            secret = cryptoFile.getPassword(secretUserID, secretResourceID);
+        }
+        return secret;
     }
 
     //retrieve username from jwt token
