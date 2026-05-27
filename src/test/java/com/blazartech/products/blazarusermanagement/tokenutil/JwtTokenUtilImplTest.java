@@ -5,7 +5,6 @@
  */
 package com.blazartech.products.blazarusermanagement.tokenutil;
 
-import com.blazartech.products.crypto.BlazarCryptoFile;
 import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -15,11 +14,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -49,13 +46,15 @@ public class JwtTokenUtilImplTest {
         public JwtTokenUtilImpl instance() {
             return new JwtTokenUtilImpl();
         }
+        
+        @Bean
+        public PublicPrivateKeyHolder keyHolder() {
+            return new PublicPrivateKeyHolderImpl();
+        }
     }
     
     @Autowired
     private JwtTokenUtilImpl instance;
-    
-    @MockitoBean
-    private BlazarCryptoFile cryptoFile;
     
     public JwtTokenUtilImplTest() {
     }
@@ -70,8 +69,6 @@ public class JwtTokenUtilImplTest {
     
     @BeforeEach
     public void setUp() {
-        Mockito.when(cryptoFile.getPassword(Mockito.any(), Mockito.any()))
-                .thenReturn("myResource myresource2 myresource3");
     }
     
     @AfterEach
@@ -142,6 +139,8 @@ public class JwtTokenUtilImplTest {
         Collection<GrantedAuthority> authorities = List.of(new MyAuthority(ROLE1), new MyAuthority(ROLE2));
         UserDetails details = new User("testUser", "testPass", authorities);
         String token = instance.generateToken(details);
+        logger.info("token = {}", token);
+        
         assertTrue(instance.validateToken(token, details));
         
         Collection<String> roles = instance.getRoles(token);

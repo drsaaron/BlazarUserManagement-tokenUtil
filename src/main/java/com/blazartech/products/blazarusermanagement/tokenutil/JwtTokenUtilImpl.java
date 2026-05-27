@@ -5,12 +5,9 @@
  */
 package com.blazartech.products.blazarusermanagement.tokenutil;
 
-import com.blazartech.products.crypto.BlazarCryptoFile;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +24,14 @@ import org.springframework.stereotype.Component;
 
 /**
  * provide the utilities. See https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
+ * 
+ * This implementation will use asymmetric encryption to sign the token.  In te real
+ * world this would necessitate breaking up this component into two: one for creating
+ * the tokens, which would use the private key to sign, and one to read the token, which would
+ * use the public key to validate.  Including both keys in this jar rather defeats the
+ * whole purpose of signing.  But this isn't the real world, just something running on my
+ * laptop, and illustrates how to do things in the real world.  So it's good enough.
+ * 
  * @author AAR1069
  */
 @Component
@@ -37,28 +41,9 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
 
     @Value("${blazartech.jwt.expiry:0}")
     public long tokenExpiry;
-
-    @Value("${blazartech.user.management.service.secret.userID}")
-    private String secretUserID;
-
-    @Value("${blazartech.user.management.service.secret.resourceID}")
-    private String secretResourceID;
-
+    
     @Autowired
-    private BlazarCryptoFile cryptoFile;
-    
-    private SecretKey signingKey() {
-        return Keys.hmacShaKeyFor(getSecret().getBytes(StandardCharsets.UTF_8));
-    }
-    
-    private String secret;
-    
-    private synchronized String getSecret() {
-        if (secret == null) {
-            secret = cryptoFile.getPassword(secretUserID, secretResourceID);
-        }
-        return secret;
-    }
+    private PublicPrivateKeyHolder keyHolder;
 
     //retrieve username from jwt token
     @Override
@@ -81,7 +66,7 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
     //for retrieveing any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .verifyWith(signingKey())
+                .verifyWith(keyHolder.getPublicKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -125,7 +110,7 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + tokenExpiry * 1000))
-                .signWith(signingKey())
+                .signWith(keyHolder.getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
 

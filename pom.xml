@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.blazartech</groupId>
     <artifactId>BlazarUserManagement-tokenUtil</artifactId>
-    <version>1.37-RELEASE</version>
+    <version>1.38-RELEASE</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,27 +19,6 @@
     </parent>
     
     <dependencies>
-        <dependency>
-            <groupId>com.blazartech</groupId>
-            <artifactId>BlazarCryptoFile-mvn</artifactId>
-            <version>1.67-RELEASE</version>
-            
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-1.2-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-slf4j-impl</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        
         <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
