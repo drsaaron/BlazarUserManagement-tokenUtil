@@ -23,15 +23,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 /**
- * provide the utilities. See https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
- * 
- * This implementation will use asymmetric encryption to sign the token.  In te real
- * world this would necessitate breaking up this component into two: one for creating
- * the tokens, which would use the private key to sign, and one to read the token, which would
- * use the public key to validate.  Including both keys in this jar rather defeats the
- * whole purpose of signing.  But this isn't the real world, just something running on my
- * laptop, and illustrates how to do things in the real world.  So it's good enough.
- * 
+ * provide the utilities. See
+ * https://dzone.com/articles/spring-boot-security-json-web-tokenjwt-hello-world
+ *
+ * This implementation will use asymmetric encryption to sign the token. In te
+ * real world this would necessitate breaking up this component into two: one
+ * for creating the tokens, which would use the private key to sign, and one to
+ * read the token, which would use the public key to validate. Including both
+ * keys in this jar rather defeats the whole purpose of signing. But this isn't
+ * the real world, just something running on my laptop, and illustrates how to
+ * do things in the real world. So it's good enough.
+ *
  * @author AAR1069
  */
 @Component
@@ -41,7 +43,7 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
 
     @Value("${blazartech.jwt.expiry:0}")
     public long tokenExpiry;
-    
+
     @Autowired
     private PublicPrivateKeyHolder keyHolder;
 
@@ -83,18 +85,19 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
     @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        String[] authorities = new String[userDetails.getAuthorities().size()];
-        userDetails.getAuthorities().stream()
-                .map(a -> a.getAuthority())
-                .collect(Collectors.toList())
-                .toArray(authorities);
+        String[] authorities
+                = userDetails.getAuthorities().stream()
+                        .map(a -> a.getAuthority())
+                        .toList()
+                        .toArray(new String[0]);
         claims.put("roles", authorities);
         return doGenerateToken(claims, userDetails.getUsername());
     }
-    
+
     @Override
     public Collection<String> getRoles(String token) {
         Claims claims = getAllClaimsFromToken(token);
+        @SuppressWarnings("unchecked")
         List<String> roles = claims.get("roles", List.class);
         return roles;
     }
@@ -120,9 +123,9 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-    
+
     private static final String BEARER_HEADER = "Bearer ";
-    
+
     @Override
     public String getToken(HttpServletRequest request) {
         final String requestTokenHeader = request.getHeader("Authorization");
@@ -136,7 +139,7 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
         } else {
             logger.warn("JWT Token does not begin with Bearer String");
         }
-        
+
         return jwtToken;
     }
 }

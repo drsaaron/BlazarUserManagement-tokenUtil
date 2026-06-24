@@ -17,7 +17,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +30,11 @@ public class PublicPrivateKeyHolderImpl implements PublicPrivateKeyHolder {
 
     private static final Logger logger = LoggerFactory.getLogger(PublicPrivateKeyHolderImpl.class);
     
-    private final Resource privateKeyResource = new ClassPathResource("jwt-signing-private.pem");
-    private final Resource publicKeyResource = new ClassPathResource("jwt-signing-public.pem");
+    @Value("${blazar.tokenutil.privateKey.file}")
+    private Resource privateKeyResource;
+    
+    @Value("${blazar.tokenutil.publicKey.file}")
+    private Resource publicKeyResource;
     
     private PublicKey publicKey;
     private PrivateKey privateKey;

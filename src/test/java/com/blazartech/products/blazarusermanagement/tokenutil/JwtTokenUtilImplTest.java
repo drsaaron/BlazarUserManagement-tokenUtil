@@ -32,6 +32,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
+    PublicPrivateKeyConfiguration.class,
     JwtTokenUtilImplTest.JwtTokenUtilImplTestConfiguration.class
 })
 public class JwtTokenUtilImplTest {

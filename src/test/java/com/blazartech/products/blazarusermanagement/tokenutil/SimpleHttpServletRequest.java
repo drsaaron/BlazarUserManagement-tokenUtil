@@ -21,7 +21,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
-import jakarta.servlet.http.PushBuilder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -392,11 +391,6 @@ public class SimpleHttpServletRequest implements HttpServletRequest {
     @Override
     public HttpServletMapping getHttpServletMapping() {
         return HttpServletRequest.super.getHttpServletMapping(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-    }
-
-    @Override
-    public PushBuilder newPushBuilder() {
-        return HttpServletRequest.super.newPushBuilder(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
 
     @Override
