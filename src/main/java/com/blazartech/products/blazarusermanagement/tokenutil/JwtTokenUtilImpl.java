@@ -88,8 +88,7 @@ public class JwtTokenUtilImpl implements JwtTokenUtil {
         String[] authorities
                 = userDetails.getAuthorities().stream()
                         .map(a -> a.getAuthority())
-                        .toList()
-                        .toArray(new String[0]);
+                        .toArray(String[]::new);
         claims.put("roles", authorities);
         return doGenerateToken(claims, userDetails.getUsername());
     }
